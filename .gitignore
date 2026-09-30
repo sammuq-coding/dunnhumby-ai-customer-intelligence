@@ -1,0 +1,31 @@
+# Dataset files and generated data
+data/raw/*
+data/processed/*
+!data/processed/modeling/
+data/processed/modeling/*
+!data/processed/modeling/README.md
+
+# Python environments, caches, and build outputs
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Notebook runtime state
+.ipynb_checkpoints/
+
+# Local environment and editor files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+.idea/
+.vscode/

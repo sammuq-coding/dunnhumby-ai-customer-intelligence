@@ -1,0 +1,11 @@
+# DAY is an integer ordered index, not a calendar date.
+analysis_cutoff_day: 712 # Exclusive cutoff: Phase 2 observed max transaction DAY = 711.
+feature_lookback_days: null # null means all available history strictly before cutoff.
+outcome_window_days: null # null means campaign post-period uses available days through cutoff.
+
+paths:
+  raw: data/raw
+  processed: data/processed/features
+
+spark_config: configs/ingestion.yaml
+sample_rows: 5

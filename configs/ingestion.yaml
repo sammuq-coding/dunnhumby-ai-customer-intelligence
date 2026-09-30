@@ -1,0 +1,67 @@
+# Paths are relative to the repository root unless made absolute.
+paths:
+  raw: data/raw
+  processed: data/processed
+
+spark:
+  # Limit local parallelism: the source includes a wide 664 MiB CSV and exact
+  # duplicate checks need shuffle memory. Avoid one task per host CPU.
+  spark.master: local[2]
+  spark.driver.memory: 4g
+  spark.sql.shuffle.partitions: "32"
+  spark.sql.session.timeZone: UTC
+  spark.sql.csv.parser.columnPruning.enabled: "false"
+
+csv:
+  header: "true"
+  inferSchema: "true"
+  mode: PERMISSIVE
+  encoding: UTF-8
+  quote: '"'
+  escape: '"'
+  columnNameOfCorruptRecord: _corrupt_record
+
+inspection:
+  sample_size: 5
+
+# This is an initial, non-blocking ceiling, not a dataset quality assertion.
+validation:
+  thresholds:
+    max_null_rate: 1.0
+
+# Dataset-specific schemas below were observed in the source CSVs by Spark.
+# Numeric columns are configured for string-preserving invalid-value checks.
+# Day indices are not calendar dates, so no date formats are asserted.
+datasets:
+  campaign_desc.csv:
+    required_columns: [DESCRIPTION, CAMPAIGN, START_DAY, END_DAY]
+    allowed_columns: [DESCRIPTION, CAMPAIGN, START_DAY, END_DAY]
+    numeric_columns: [CAMPAIGN, START_DAY, END_DAY]
+  campaign_table.csv:
+    required_columns: [DESCRIPTION, household_key, CAMPAIGN]
+    allowed_columns: [DESCRIPTION, household_key, CAMPAIGN]
+    numeric_columns: [household_key, CAMPAIGN]
+  causal_data.csv:
+    required_columns: [PRODUCT_ID, STORE_ID, WEEK_NO, display, mailer]
+    allowed_columns: [PRODUCT_ID, STORE_ID, WEEK_NO, display, mailer]
+    numeric_columns: [PRODUCT_ID, STORE_ID, WEEK_NO]
+  coupon.csv:
+    required_columns: [COUPON_UPC, PRODUCT_ID, CAMPAIGN]
+    allowed_columns: [COUPON_UPC, PRODUCT_ID, CAMPAIGN]
+    numeric_columns: [COUPON_UPC, PRODUCT_ID, CAMPAIGN]
+  coupon_redempt.csv:
+    required_columns: [household_key, DAY, COUPON_UPC, CAMPAIGN]
+    allowed_columns: [household_key, DAY, COUPON_UPC, CAMPAIGN]
+    numeric_columns: [household_key, DAY, COUPON_UPC, CAMPAIGN]
+  hh_demographic.csv:
+    required_columns: [classification_1, classification_2, classification_3, HOMEOWNER_DESC, classification_5, classification_4, KID_CATEGORY_DESC, household_key]
+    allowed_columns: [classification_1, classification_2, classification_3, HOMEOWNER_DESC, classification_5, classification_4, KID_CATEGORY_DESC, household_key]
+    numeric_columns: [household_key]
+  product.csv:
+    required_columns: [PRODUCT_ID, MANUFACTURER, DEPARTMENT, BRAND, COMMODITY_DESC, SUB_COMMODITY_DESC, CURR_SIZE_OF_PRODUCT]
+    allowed_columns: [PRODUCT_ID, MANUFACTURER, DEPARTMENT, BRAND, COMMODITY_DESC, SUB_COMMODITY_DESC, CURR_SIZE_OF_PRODUCT]
+    numeric_columns: [PRODUCT_ID, MANUFACTURER]
+  transaction_data.csv:
+    required_columns: [household_key, BASKET_ID, DAY, PRODUCT_ID, QUANTITY, SALES_VALUE, STORE_ID, RETAIL_DISC, TRANS_TIME, WEEK_NO, COUPON_DISC, COUPON_MATCH_DISC]
+    allowed_columns: [household_key, BASKET_ID, DAY, PRODUCT_ID, QUANTITY, SALES_VALUE, STORE_ID, RETAIL_DISC, TRANS_TIME, WEEK_NO, COUPON_DISC, COUPON_MATCH_DISC]
+    numeric_columns: [household_key, BASKET_ID, DAY, PRODUCT_ID, QUANTITY, SALES_VALUE, STORE_ID, RETAIL_DISC, TRANS_TIME, WEEK_NO, COUPON_DISC, COUPON_MATCH_DISC]

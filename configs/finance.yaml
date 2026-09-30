@@ -1,0 +1,37 @@
+# Assumptions for the illustrative finance layer. Values are not learned from
+# redemption outcomes and should be reviewed for a real business use case.
+paths:
+  customer_features: data/processed/features/customer_features
+  response_dataset: data/processed/modeling/campaign_response_dataset.parquet
+  response_model: data/processed/modeling/response_model.pt
+  response_calibrator: data/processed/modeling/response_model_platt_calibrator.pt
+  output_customer_economics: data/processed/finance/customer_economics.parquet
+  output_campaign_offer_economics: data/processed/finance/campaign_offer_economics.parquet
+  output_report: data/processed/finance/finance_report.json
+
+finance:
+  # DAY indices observed in this dataset span 1 through 711. Treat the full
+  # observed dataset span as the revenue rate denominator, not household tenure.
+  observed_history_days: 711
+  days_per_month: 30.436875
+  horizon_months:
+    short: 12
+    long: 24
+  annual_discount_rate: 0.10
+  contribution_margin: 0.25
+  monthly_retention_rate: 0.90
+  default_offer_cost: 5.00
+  # Scenario if a household redeems: one historical-average basket, valued at
+  # the configured contribution margin. This is a transparent assumption.
+  response_scenario: one_average_basket
+
+sensitivity:
+  contribution_margins: [0.15, 0.25, 0.35]
+  monthly_retention_rates: [0.80, 0.90, 0.95]
+  annual_discount_rates: [0.05, 0.10, 0.15]
+  offer_costs: [2.50, 5.00, 7.50]
+
+spark:
+  spark.master: local[2]
+  spark.sql.shuffle.partitions: "32"
+  spark.sql.session.timeZone: UTC

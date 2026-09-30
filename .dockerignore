@@ -1,0 +1,15 @@
+# Large local inputs and generated outputs are mounted/built separately.
+data/raw/
+data/processed/
+
+# Repository metadata, local environments, secrets, and runtime state.
+.git/
+.venv/
+venv/
+.env
+.pytest_cache/
+__pycache__/
+*.py[cod]
+.DS_Store
+.idea/
+.vscode/

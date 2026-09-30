@@ -1,0 +1,31 @@
+# Phase 4 campaign response model settings. DAY values remain integer indices.
+paths:
+  raw: data/raw
+  output: data/processed/modeling/campaign_response_dataset.parquet
+  description: data/processed/modeling/README.md
+  model: data/processed/modeling/response_model.pt
+  metrics: data/processed/modeling/response_model_metrics.json
+  calibrator: data/processed/modeling/response_model_platt_calibrator.pt
+  calibration_metrics: data/processed/modeling/response_model_calibration_metrics.json
+
+lookback_days: 90
+spark:
+  spark.master: local[2]
+  spark.sql.shuffle.partitions: "32"
+  spark.sql.session.timeZone: UTC
+split:
+  # Splits are chronological by distinct campaign START_DAY, keeping tied
+  # start days together. These fractions choose day-boundary groups, not rows.
+  train_fraction: 0.60
+  validation_fraction: 0.20
+
+training:
+  seed: 20260929
+  batch_size: 256
+  learning_rate: 0.001
+  max_epochs: 100
+  early_stopping_patience: 10
+  threshold: 0.5
+  hidden_units: 32
+  use_pos_weight: true
+  permutation_repeats: 10
